@@ -1,3 +1,5 @@
+1;
+
 function f = func(x)
   f = 2 * cosh(x / 4) - x;
 endfunction

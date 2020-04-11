@@ -1,10 +1,12 @@
+1;
+
 % Recursive version of bisection method
 %
 % Evaluates an approximation for p such that |p - root| < atol, where root
 % is a root of func. This function assumes func(a) * func(b) < 0.
 function [p] = bisect_recursive(func, a, b, atol)
   p = (a + b) / 2;
-  
+
   if (b - a) < atol
     return
   else
@@ -17,7 +19,9 @@ function [p] = bisect_recursive(func, a, b, atol)
     else
       a = p;
     endif
-    
-    p = bisect_recursive(func, a, b, atol);  
+
+    p = bisect_recursive(func, a, b, atol);
   endif
 endfunction
+
+bisect_recursive(@sin, -1, 1, 1.e-8)
