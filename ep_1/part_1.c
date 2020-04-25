@@ -1,6 +1,14 @@
-#include <stdio.h>
-#include <math.h>
+/**
+ * Ygor Sad Machado
+ * NUSP: 8910368
+ *
+ * EP 1 - Part 1
+ * This part is responsible of finding the roots of a function
+ * using an implementation of the fixed-point iteration method
+ */
 #include <float.h>
+#include <math.h>
+#include <stdio.h>
 
 /**
    Definition of the main function whose roots we want
