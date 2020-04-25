@@ -5,8 +5,11 @@ CC = gcc
 # -lm links the math library
 CFLAGS = -Wall -lm
 
-all: ep_1.c
-	$(CC) $(CFLAGS) ep_1.c -o ep_1.o
+part_1:
+	$(CC) $(CFLAGS) part_1.c -o part_1.o
+
+part_2:
+	$(CC) $(CFLAGS) part_2.c -o part_2.o
 
 clean:
-	rm ep_1.o
+	rm *.o

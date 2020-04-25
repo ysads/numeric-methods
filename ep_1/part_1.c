@@ -76,7 +76,6 @@ void find_root_around (double guess) {
 
   root = fixed_point_method(guess, precision);
 
-  printf("=> iteration count: %d\n", count);
   printf("=> root: %lf\n\n", root);
 }
 
