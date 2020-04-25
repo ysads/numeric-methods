@@ -7,22 +7,55 @@
  * a given function f
  */
 #include <complex.h>
+#include <float.h>
+#include <math.h>
 #include <stdio.h>
 
-#define MAX_ITERATIONS 20
-#define TOLERANCE 0.0000001
+#define MAX_ITERATIONS 100
+#define TOLERANCE 1E-8
 
+/**
+ * Simple helper function that converts a complex double result
+ * coming from newton method into a discrete integer, easier to plot
+ */
+int output_for (double complex z) {
+  int output;
+  double values[3] = {-1.879385, 0.347296, 1.532089};
+
+  for (output = 0; output < 3; output++) {
+    /**
+     * Due to floating-point precision issues, we can not use ==
+     * operator here. Hence we evaluate proximity between two values
+     * using absolute value
+     */
+    if (fabs(creal(z) - values[output]) < 1E-2) {
+      return output;
+    }
+  }
+  return 3;
+}
+
+
+/**
+ * Evaluates the f function at a given point in complex plane
+ */
 double complex eval_f (double complex z) {
-  // return 2 * cosh(z / 4) - z;
-  return cpow(z, 4) - 1;
+  return cpow(z, 3) - 3 * z + 1;
 }
 
+
+/**
+ * Evaluates the derivative of f in a given point in complex plane
+ */
 double complex eval_df (double complex z) {
-  // return 0.5 * sinh(z / 4) - 1;
-  return 4 * cpow(z, 3);
+  return 3 * cpow(z, 2) - 3;
 }
 
-double complex newton (double complex z, double complex tol, int max_iter) {
+
+/**
+ * Executes the newton method using the given z as the start point
+ */
+double complex newton (double complex z) {
   int elapsed_iterations;
   complex double curr_z;
   complex double f_z, df_z;
@@ -33,16 +66,16 @@ double complex newton (double complex z, double complex tol, int max_iter) {
   curr_z = z;
   elapsed_iterations = 0;
 
-  while (elapsed_iterations <= max_iter) {
+  while (elapsed_iterations < MAX_ITERATIONS) {
     f_z = eval_f(curr_z);
-    df_z = eval_f(curr_z);
+    df_z = eval_df(curr_z);
 
     /**
      * In case the current f(z) value is already within our tolerance
      * range from the origin, we have can safely return the current z
      * value, since it fits as a valid root.
      */
-    if (cabs(f_z) <= tol) {
+    if (cabs(f_z) <= TOLERANCE) {
       return curr_z;
     }
 
@@ -59,48 +92,52 @@ double complex newton (double complex z, double complex tol, int max_iter) {
    * converge for this z. To differentiate this from a valid root,
    * we return the infinity constant.
    */
-  return INFINITY;
+  return (double complex) DBL_MIN;
 }
 
 
-double scaled(int coordinate, int total_dim) {
-  return 1.0 * coordinate / total_dim;
-}
-
-
-void newton_basins (int l, int u) {
+/**
+ * Generates the newton basins by iterating over an area of the complex
+ * plane and applying the newton method for each point in this section.
+ */
+void newton_basins (int l, int u, int p) {
   FILE *output;
-  double complex x, y;
   double complex z;
-  double complex root;
+  double re_z, im_z;
+  double step;
+  double complex result;
 
-  output = fopen("output.txt", "w+");
+  output = fopen("output.txt", "w");
 
   /**
-   * Iterates over
+   * The step states how much we increment the coordinates on each
+   * iteration on the complex plane
    */
-  for (x = 0; x <= l; x++) {
-    for (y = 0; y <= u; y++) {
+  step = 1.0 * (u - l) / p;
+
+  /**
+   * We iterate over the given section of the complex plane using
+   * step value we have just evaluated
+   */
+  for (re_z = l; re_z <= u; re_z += step) {
+    for (im_z = l; im_z <= u; im_z += step) {
+      z = re_z + I * im_z;
+
+      result = newton(z);
+
       /**
-       * We must scale our pixel (x, y) down to our domain on
-       * complex plane. This is needed to make sure every point
-       * is within our delimited area.
+       * Outputs the discretization of the newton method into the output
+       * file. This process helps choosing colors to plot the basins later
        */
-      z = scaled(x, l) + I * scaled(y, u);
-
-      root = newton(z, TOLERANCE, MAX_ITERATIONS);
-
-      fprintf(output, "%3.8fi ", root);
+      fprintf(output, "%lf\t%lf\t%d\n", re_z, im_z, output_for(result));
     }
-    fprintf(output, "\n");
   }
 
   fclose(output);
 }
 
 int main () {
+  newton_basins(-100, 100, 1000);
 
-  newton_basins(400, 400);
-  
   return 0;
 }
