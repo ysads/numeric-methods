@@ -1,5 +1,16 @@
 # EP1
 
+## Part 1 - Fixed-point iteration
+
+This part assumes that `g(x) = x - f(x) / df(x)`. This is convenient because, in order to fixed-point iteration work, f(x) = 0 iff g(x) = x, which clearly happens since, when f(x) = 0 then g(x) = f(x) / df(x) and df(x) can't be zero.
+
+#### How to run
+To compile this part, run:
+
+```shell
+make part_1 && ./part_1.o
+```
+
 ## Part 2 - Newton Basins
 
 #### How to run
