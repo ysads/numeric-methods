@@ -33,3 +33,4 @@ These were the functions used while compiling the images:
 2. `2 * cosh(x / 4) - x (u: -50, l: 50, p: 800)`
 3. `x^5 - 1 (u: -2, l: 2, p: 200)`
 4. `2x^4 - x^3 + 5x (u: -2, l: 2, p: 200)`
+5. `x^7 - 1 (u: -2, l: 2, p: 200)`
