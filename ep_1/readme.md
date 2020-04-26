@@ -21,16 +21,17 @@ This `output(z)` is the result of the discretization applied to each result of n
 To plot the result coming from the dataset, just run
 
 ```shell
-gnuplot plot.gpi
+gnuplot plot.gpi -p
 ```
 
-This will open a window with the basins plotted.
+This will open a window with the basins plotted. The `-p` options ensures the plot window will be kept open after the script finishes to execute.
 
 #### Functions index
 
 These were the functions used while compiling the images:
-1. `x^3 - 3x + 1 (u: -10, l: 10, p: 500)`
-2. `2 * cosh(x / 4) - x (u: -50, l: 50, p: 800)`
-3. `x^5 - 1 (u: -2, l: 2, p: 200)`
-4. `2x^4 - x^3 + 5x (u: -2, l: 2, p: 200)`
-5. `x^7 - 1 (u: -2, l: 2, p: 200)`
+1. `x^3 - 3x + 1 (l: -10, u: 10, p: 500)`
+2. `2 * cosh(x / 4) - x (l: -50, u: 50, p: 800)`
+3. `x^5 - 1 (l: -2, u: 2, p: 200)`
+4. `2x^4 - x^3 + 5x (l: -2, u: 2, p: 200)`
+5. `x^7 - 1 (l: -2, u: 2, p: 200)`
+6. `exp(x) - 2 * x^2 (l: -10, u: 10, p: 500)`

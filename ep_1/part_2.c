@@ -11,7 +11,7 @@
 #include <math.h>
 #include <stdio.h>
 
-#define MAX_ITERATIONS 100
+#define MAX_ITERATIONS 40
 #define TOLERANCE 1E-8
 
 /**
@@ -27,12 +27,10 @@
  */
 int output_for (double complex z) {
   int output;
-  double complex values[6] = { -1,
-                               1,
-                               -0.80902 - 0.58779 * I,
-                               -0.80902 + 0.58779 * I,
-                               0.30902 - 0.95106 * I,
-                               0.30902 + 0.95106 * I };
+  double complex values[4] = { -1,
+                               1.487962,
+                               2.617867,
+                               -0.539835 };
 
   /**
    * Note that the value at index 0 is not valid. This happens because gnuplot
@@ -62,7 +60,7 @@ int output_for (double complex z) {
   @returns the value of f(z).
  */
 double complex eval_f (double complex z) {
-  return cpow(z, 5) - 1;
+  return cexp(z) - 2 * cpow(z, 2);
 }
 
 
@@ -75,7 +73,7 @@ double complex eval_f (double complex z) {
   @returns the value of df(z).
  */
 double complex eval_df (double complex z) {
-  return 5 * cpow(z, 4);
+  return cexp(z) - 4 * z;
 }
 
 
@@ -174,7 +172,7 @@ void newton_basins (int l, int u, int p) {
 }
 
 int main () {
-  newton_basins(-2, 2, 200);
+  newton_basins(-10, 10, 500);
 
   return 0;
 }
