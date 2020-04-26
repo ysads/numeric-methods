@@ -21,7 +21,7 @@ This `output(z)` is the result of the discretization applied to each result of n
 To plot the result coming from the dataset, just run
 
 ```shell
-gnuplot plot.gpi -p
+gnuplot plot.gp -p
 ```
 
 This will open a window with the basins plotted. The `-p` options ensures the plot window will be kept open after the script finishes to execute.
