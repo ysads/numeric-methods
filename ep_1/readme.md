@@ -29,4 +29,7 @@ This will open a window with the basins plotted.
 #### Functions index
 
 These were the functions used while compiling the images:
-1. `x^3 - 3x + 1 (u: 10, l: 10, i: 100)`
+1. `x^3 - 3x + 1 (u: -10, l: 10, p: 500)`
+2. `2 * cosh(x / 4) - x (u: -50, l: 50, p: 800)`
+3. `x^5 - 1 (u: -2, l: 2, p: 200)`
+4. `2x^4 - x^3 + 5x (u: -2, l: 2, p: 200)`
