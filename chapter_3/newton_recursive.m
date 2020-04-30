@@ -1,19 +1,19 @@
 1;
 
-## The function example 3.5
+% The function example 3.5
 function f = func(x)
   f = 2 * cosh(x / 4) - x;
 endfunction
 
-## The derivative of the aforementioned function
+% The derivative of the aforementioned function
 function f = dfunc(x)
   f = 0.5 * sinh(x / 4) - 1;
 endfunction
 
-## Definition of the newton's method. Note that the stop
-## condition is defined as how close f(x) is from zero.
-## This definition might have issues with stack overflow
-## for bigger x's. Be careful!
+% Definition of the newtons method. Note that the stop
+% condition is defined as how close f(x) is from zero.
+% This definition might have issues with stack overflow
+% for bigger xs. Be careful!
 function [root] = newton_recursive(fn, dfn, x, tol)
   fx = feval(fn, x);
   dfx = feval(dfn, x);
