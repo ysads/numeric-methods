@@ -1,0 +1,314 @@
+\documentclass[9.5pt,reqno,a4paper]{amsart}
+%SetFonts
+
+%SetFonts
+
+%%%% Pacotes adicionais para enumeração de items e alinhamento de equações
+%%%%
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+
+%%%% Escrevendo em português
+%%%% 
+\usepackage[utf8]{inputenc}
+
+%%%% Configurações para output correto de pdf
+%%%%
+
+\usepackage[T1]{fontenc}
+\usepackage{ae}
+\usepackage{aecompl}
+\usepackage{amssymb}
+
+%%%% Layout de página
+%%%%
+\usepackage{fullpage}
+\usepackage{setspace}
+\usepackage{bbm}
+
+%%%% Comandos personalizados
+%%%%
+\def\Assin#1{\noindent\textit{Assinatura}\strut\\%:\\
+\framebox[\textwidth]{\phantom{\vrule height#1}}}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+%%% Valor absoluto
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+
+% Swap the definition of \abs* and \norm*, so that \abs
+% and \norm resizes the size of the brackets, and the 
+% starred version does not.
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+%
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+\begin{document}
+
+\parindent=0pt
+
+\title[MAT0210]
+{MAT0210 Laboratório de Métodos Numéricos}\\\vspace{3\jot}%\\\vspace{1\jot}
+
+\footskip=28pt
+
+\maketitle
+\thispagestyle{empty} 
+\pagestyle{plain}
+\onehalfspace
+
+\textbf{Nome: Ygor Sad Machado}\hfill
+\textbf{Número USP: 8910368}\null
+
+\medskip
+\textbf{Exercício 10.6}\hfill
+\textbf{Data: 30/04/2020}\null
+
+\noindent\rule{\textwidth}{0.4pt}
+Para as resoluções abaixo, considere os seguintes pontos:
+
+\begin{itemize}
+    \item (-1, 1)
+    \item (0, 1)
+    \item (1, 2)
+    \item (2, 0)
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.4pt}
+\textbf{Base Monomial}
+
+Interpolar um polinômio usando base monomial é relativamente simples. Começamos escrevendo 
+
+\begin{align*}
+    p(x) = c_0x^0 + c_1x^1 + c_2x^2 + c_3x^3 \numberthis \label{monomial_general}
+\end{align*}
+
+\bigskip
+Substituindo os valores de x e y em \eqref{monomial_general}:
+
+\begin{align*}
+    p(x_0) &= c_0 - 1c_1 + 1c_2 - 1c_3 = 1\\
+    p(x_1) &= c_0 + 0c_1 + 0c_2 + 0c_3 = 1\\
+    p(x_2) &= c_0 + 1c_1 + 1c_2 + 1c_3 = 2\\
+    p(x_3) &= c_0 + 2c_1 + 4c_2 + 8c_3 = 0\\
+\end{align*}
+
+\bigskip
+Ora mas isso pode ser facilmente extraído para uma equação matricial:
+
+\begin{equation*}
+\begin{pmatrix}
+1 & -1 & 1 & -1 \\
+1 & 0 & 0 & 0 \\
+1 & 1 & 1 & 1 \\
+1 & 2 & 4 & 8
+\end{pmatrix}
+\begin{pmatrix}
+c_0\\
+c_1\\
+c_2\\
+c_3\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+1\\
+1\\
+2\\
+0\\
+\end{pmatrix}
+\end{equation*}
+
+\bigskip
+\bigskip
+Resolver essa equação é trivial, e nos dá como resultado:
+
+\begin{align*}
+    c_0 &= 1\\
+    c_1 & = \frac{7}{6}\\
+    c_2 & = \frac{1}{2}\\
+    c_3 & = -\frac{2}{3}
+\end{align*}
+
+\bigskip
+Aplicando estes coeficientes à equação \eqref{monomial_general}, temos enfim noss polinômio interpolado:
+
+\begin{equation*}
+    p(x) = -\frac{2}{3}x^3 + \frac{1}{2}x^2 + \frac{7}{6}x + 1
+\end{equation*}
+
+\qed\null
+
+\bigskip
+\noindent\rule{\textwidth}{0.4pt}
+\textbf{Base de Lagrange}
+
+Para usar essa base, inicialmente, precisamos calcular os polinômios de Lagrange $L_j(x), j= 0, 1, 2, 3$, lembrando que $L_j(x) = 1$, se $x = j$.
+
+\medskip
+Fixando o primeiro ponto, (-1, 1):
+
+\begin{align*}
+    L_0(x)  &= a_0(x-0)(x-1)(x-2) \\
+    L_0(-1) &= a_0(-1-0)(-1-1)(-1-2) = -6a_0 \\
+    L_0(-1) &= 1 = -6a_0 \implies a_0 = \frac{-1}{6}\\
+    &\therefore\\
+    L_0(x) &= -\frac{1}{6}(x-0)(x-1)(x-2) \numberthis \label{l_0}
+\end{align*}
+
+\bigskip
+\bigskip
+Fixando o segundo ponto, (0, 1):
+
+\begin{align*}
+    L_1(x) &= a_1(x+1)(x-1)(x-2)\\
+    L_1(0) &= a_1(0+1)(0-1)(0-2) = 2a_1\\
+    L_1(0) &= 1 = 2a_1 \implies a_1 = \frac{1}{2}\\
+    &\therefore\\
+    L_1(x) &= \frac{1}{2}(x+1)(x-1)(x-2) \numberthis \label{l_1}
+\end{align*}
+
+\bigskip
+\bigskip
+Fixamos agora o terceiro ponto, (1, 2):
+
+\begin{align*}
+    L_2(x) &= a_2(x+1)(x-0)(x-2)\\
+    L_2(1) &= a_2(1+1)(1-0)(1-2) = -2a_2\\
+    L_2(1) &= 1 = -2a_2 \implies a_2 = \frac{-1}{2}\\
+    &\therefore\\
+    L_2(x) &= -\frac{1}{2}(x+1)(x-0)(x-2)\\ \numberthis \label{l_2}
+\end{align*}
+
+\bigskip
+\bigskip
+Por fim, fixando (2, 0):
+
+\begin{align*}
+    L_3(x) &= a_3(x+1)(x-0)(x-1)\\
+    L_3(2) &= a_3(2+1)(2-0)(2-1) = 6a_3\\
+    L_3(2) &= 1 = 6a_3 \implies a_3 = \frac{1}{6}\\
+    &\therefore\\
+    L_3(x) &= \frac{1}{6}(x+1)(x-0)(x-1) \numberthis \label{l_3}
+\end{align*}
+
+\bigskip
+\bigskip
+Agora que temos todos os $L_j(x)$, convém lembrar que
+
+\begin{equation}
+    p(x) = \sum_{j=0}^{n} y_j L_j(x) \numberthis \label{lagrange_formula}
+\end{equation}
+
+\bigskip
+\bigskip
+Substituindo \eqref{l_0}, \eqref{l_1}, \eqref{l_2} e \eqref{l_3} em \eqref{lagrange_formula}, obtemos:
+
+\begin{align*}
+    p(x) &= y_0L_0(x) + y_1L_1(x) + y_2L_2(x) + y_2L_2(x)\\
+         &= \left(\frac{-1}{6}\right)x(x-1)(x-2) + \left(\frac{1}{2}\right)(x+1)(x-1)(x-2) +\\
+         & + \left(\frac{-2}{2}\right)(x+1)x(x-2) + \left(\frac{0}{6}\right)(x+1)x(x-1)\\
+         &= \frac{-1}{6}x(x-1)(x-2) + \frac{1}{2}(x+1)(x-1)(x-2) + (x+1)x(x-2) \numberthis \label{compressed_lagrange}
+\end{align*}
+
+\bigskip
+\bigskip
+A equação \eqref{compressed_lagrange} já apresenta o polinômio que queríamos interpolar, porém em uma forma mais compacta. Se o expandirmos, teremos:
+
+\begin{equation}
+    p(x) = \frac{-2}{3}x^3 + \frac{1}{2}x^2  + \frac{7}{6}x + 1
+\end{equation}
+
+\qed\null
+
+\bigskip
+\bigskip
+\noindent\rule{\textwidth}{0.4pt}
+\textbf{Base de Newton}
+
+Vamos iniciar recordando que, de maneira genérica, podemos escrever um polinômio $p(x)$ como:
+
+\begin{equation*}
+    p(x) = \sum_{i=0}^{n} c_i\phi_i(x) \numberthis \label{newton_general}
+\end{equation*}
+
+\bigskip
+\bigskip
+Em que $\phi_i(x)$ é uma base polinomial de Newton. Em particular, para $n=3$, temos:
+
+\begin{align*}
+    \phi_0(x) &= 1\\
+    \phi_1(x) &= x - x_0\\
+    \phi_2(x) &= (x - x_0)(x - x_1)\\
+    \phi_3(x) &= (x - x_0)(x - x_1)(x - x_2)
+\end{align*}
+
+\bigskip
+\bigskip
+Para calcular os coeficientes $c_i$ de \eqref{newton_general}, vamos usar as fórmulas das diferenças divididas de Newton. Usando-as, o coeficiente $c_0$ é simplesmente o valor da primeira ordenada, isto é
+
+\begin{equation*}
+    c_0 = y_0 = 1 \numberthis \label{c_0}
+\end{equation*}
+
+\bigskip
+\bigskip
+Calcular $c_1$ também é simples, bastando fazer:
+
+\begin{align*}
+    c_1 &= \frac{y_1 - y_0}{x_1 - x_0} = \frac{1 - 1}{0 + 1} = 0 \numberthis \label{c_1}
+\end{align*}
+
+\bigskip
+\bigskip
+Já o cálculo de $c_2$ é um pouco mais verborrágico. No entanto, por este ser um método recursivo, podemos reaproveitar o valor já calculado de $c_1$:
+
+\begin{align*}
+    c_2 = \cfrac{\cfrac{y_2 - y_0}{x_2 - x_0} - c_1}{x_2 - x_1}
+        = \cfrac{\cfrac{2 - 1}{1 + 1} - 0}{1 - 0}
+        = \cfrac{1}{2} \numberthis \label{c_2}
+\end{align*}
+
+\bigskip
+\bigskip
+Novamente, podemos fazer uso da natureza recursiva do método, e reaproveitar $c_2$ e $c_1$ no cálculo de $c_3$:
+
+\begin{align*}
+    c_3 = \cfrac{\cfrac{\cfrac{y_3 - y_0}{x_3 - x_0} - c_1}{x_3 - x_1} - c_2}{x_3 - x_2}
+        = \cfrac{\cfrac{\cfrac{0 - 1}{2 + 1} - 0}{2 - 0} - \cfrac{1}{2}}{2 - 1}
+        = -\cfrac{2}{3} \numberthis \label{c_3}
+\end{align*}
+
+\bigskip
+\bigskip
+Agora que temos todos os coeficientes, podemos substituí-los, juntamente com os $\phi_i(x)$ em \eqref{newton_general}:
+
+\begin{align*}
+    p(x) &= c_0\phi_0(x) + c_0\phi_0(x) + c_0\phi_0(x) + c_0\phi_0(x) \\
+         &= 1 \cdot 1 + 0(x+1) + \frac{1}{2}(x+1)(x-0) - \frac{2}{3}(x+1)(x-0)(x-1) \\
+         &= 1 + \frac{1}{2}(x+1)x - \frac{2}{3}(x+1)(x-1)x \numberthis \label{final_newton}
+\end{align*}
+
+\bigskip
+\bigskip
+A equação \eqref{final_newton} já representa o polinômio que buscávamos interpolar. No entanto, ainda podemos expandi-lo, tal como fizemos com os demais.
+
+\begin{align*}
+    p(x) = -\frac{2}{3}x^3 + \frac{1}{2}x^2 + \frac{7}{6}x + 1
+\end{align*}
+
+\qed\null
+
+\bigskip
+\bigskip
+\noindent\rule{\textwidth}{0.4pt}
+Como consideração final, é relevante ressaltar que, mesmo tendo aplicado três metodologias diferentes de interpolação, o polinômio resultante sempre foi o mesmo. Ainda que os métodos de Newton e de Lagrange inicialmente gerem um polinômio num formato mais compacto, é fácil expandi-los até que estejam em sua forma canônica. Isso demonstra que a representação para este polinômio, no fim das contas, é única para os três métodos aqui apresentados.
+
+\end{document}
