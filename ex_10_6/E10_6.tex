@@ -95,10 +95,10 @@ Interpolar um polinômio usando base monomial é relativamente simples. Começam
 Substituindo os valores de x e y em \eqref{monomial_general}:
 
 \begin{align*}
-    p(x_0) &= c_0 - 1c_1 + 1c_2 - 1c_3 = 1\\
-    p(x_1) &= c_0 + 0c_1 + 0c_2 + 0c_3 = 1\\
-    p(x_2) &= c_0 + 1c_1 + 1c_2 + 1c_3 = 2\\
-    p(x_3) &= c_0 + 2c_1 + 4c_2 + 8c_3 = 0\\
+    p(x_0) &= p(-1) = c_0 - 1c_1 + 1c_2 - 1c_3 = 1\\
+    p(x_1) &= p(0) = c_0 + 0c_1 + 0c_2 + 0c_3 = 1\\
+    p(x_2) &= p(1) = c_0 + 1c_1 + 1c_2 + 1c_3 = 2\\
+    p(x_3) &= p(2) = c_0 + 2c_1 + 4c_2 + 8c_3 = 0\\
 \end{align*}
 
 \bigskip
@@ -138,7 +138,7 @@ Resolver essa equação é trivial, e nos dá como resultado:
 \end{align*}
 
 \bigskip
-Aplicando estes coeficientes à equação \eqref{monomial_general}, temos enfim noss polinômio interpolado:
+Aplicando estes coeficientes à equação \eqref{monomial_general}, temos enfim nosso polinômio interpolado:
 
 \begin{equation*}
     p(x) = -\frac{2}{3}x^3 + \frac{1}{2}x^2 + \frac{7}{6}x + 1
@@ -150,7 +150,7 @@ Aplicando estes coeficientes à equação \eqref{monomial_general}, temos enfim 
 \noindent\rule{\textwidth}{0.4pt}
 \textbf{Base de Lagrange}
 
-Para usar essa base, inicialmente, precisamos calcular os polinômios de Lagrange $L_j(x), j= 0, 1, 2, 3$, lembrando que $L_j(x) = 1$, se $x = j$.
+Para usar essa base, inicialmente, precisamos calcular os polinômios de Lagrange $L_j(x), j= 0, 1, 2, 3$. É válido recordar também que $L_j(x) = 1$, se $x = j$.
 
 \medskip
 Fixando o primeiro ponto, (-1, 1):
@@ -158,7 +158,7 @@ Fixando o primeiro ponto, (-1, 1):
 \begin{align*}
     L_0(x)  &= a_0(x-0)(x-1)(x-2) \\
     L_0(-1) &= a_0(-1-0)(-1-1)(-1-2) = -6a_0 \\
-    L_0(-1) &= 1 = -6a_0 \implies a_0 = \frac{-1}{6}\\
+    L_0(-1) &= 1 = -6a_0 \implies a_0 = -\frac{1}{6}\\
     &\therefore\\
     L_0(x) &= -\frac{1}{6}(x-0)(x-1)(x-2) \numberthis \label{l_0}
 \end{align*}
@@ -182,7 +182,7 @@ Fixamos agora o terceiro ponto, (1, 2):
 \begin{align*}
     L_2(x) &= a_2(x+1)(x-0)(x-2)\\
     L_2(1) &= a_2(1+1)(1-0)(1-2) = -2a_2\\
-    L_2(1) &= 1 = -2a_2 \implies a_2 = \frac{-1}{2}\\
+    L_2(1) &= 1 = -2a_2 \implies a_2 = -\frac{1}{2}\\
     &\therefore\\
     L_2(x) &= -\frac{1}{2}(x+1)(x-0)(x-2)\\ \numberthis \label{l_2}
 \end{align*}
@@ -213,9 +213,9 @@ Substituindo \eqref{l_0}, \eqref{l_1}, \eqref{l_2} e \eqref{l_3} em \eqref{lagra
 
 \begin{align*}
     p(x) &= y_0L_0(x) + y_1L_1(x) + y_2L_2(x) + y_2L_2(x)\\
-         &= \left(\frac{-1}{6}\right)x(x-1)(x-2) + \left(\frac{1}{2}\right)(x+1)(x-1)(x-2) +\\
-         & + \left(\frac{-2}{2}\right)(x+1)x(x-2) + \left(\frac{0}{6}\right)(x+1)x(x-1)\\
-         &= \frac{-1}{6}x(x-1)(x-2) + \frac{1}{2}(x+1)(x-1)(x-2) + (x+1)x(x-2) \numberthis \label{compressed_lagrange}
+         &= \left(-\frac{1}{6}\right)x(x-1)(x-2) + \left(\frac{1}{2}\right)(x+1)(x-1)(x-2) +\\
+         & + \left(-\frac{2}{2}\right)(x+1)x(x-2) + \left(\frac{0}{6}\right)(x+1)x(x-1)\\
+         &= -\frac{1}{6}x(x-1)(x-2) + \frac{1}{2}(x+1)(x-1)(x-2) + (x+1)x(x-2) \numberthis \label{compressed_lagrange}
 \end{align*}
 
 \bigskip
@@ -223,7 +223,7 @@ Substituindo \eqref{l_0}, \eqref{l_1}, \eqref{l_2} e \eqref{l_3} em \eqref{lagra
 A equação \eqref{compressed_lagrange} já apresenta o polinômio que queríamos interpolar, porém em uma forma mais compacta. Se o expandirmos, teremos:
 
 \begin{equation}
-    p(x) = \frac{-2}{3}x^3 + \frac{1}{2}x^2  + \frac{7}{6}x + 1
+    p(x) = -\frac{2}{3}x^3 + \frac{1}{2}x^2  + \frac{7}{6}x + 1
 \end{equation}
 
 \qed\null
@@ -291,7 +291,7 @@ Novamente, podemos fazer uso da natureza recursiva do método, e reaproveitar $c
 Agora que temos todos os coeficientes, podemos substituí-los, juntamente com os $\phi_i(x)$ em \eqref{newton_general}:
 
 \begin{align*}
-    p(x) &= c_0\phi_0(x) + c_0\phi_0(x) + c_0\phi_0(x) + c_0\phi_0(x) \\
+    p(x) &= c_0\phi_0(x) + c_1\phi_1(x) + c_2\phi_2(x) + c_3\phi_3(x) \\
          &= 1 \cdot 1 + 0(x+1) + \frac{1}{2}(x+1)(x-0) - \frac{2}{3}(x+1)(x-0)(x-1) \\
          &= 1 + \frac{1}{2}(x+1)x - \frac{2}{3}(x+1)(x-1)x \numberthis \label{final_newton}
 \end{align*}
