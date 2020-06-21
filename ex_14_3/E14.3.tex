@@ -1,0 +1,194 @@
+\documentclass[11pt]{amsart}
+
+%%%% Pacotes adicionais para enumeração de items e alinhamento de equações
+%%%%
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{systeme}
+
+%%%% Escrevendo em português
+%%%% 
+\usepackage[utf8]{inputenc}
+
+%%%% Configurações para output correto de pdf
+%%%%
+
+\usepackage[T1]{fontenc}
+\usepackage{ae}
+\usepackage{aecompl}
+\usepackage{amssymb}
+
+%%%% Layout de página
+%%%%
+\usepackage{fullpage}
+\usepackage{setspace}
+\usepackage{tabu}
+
+%%%% Comandos personalizados
+%%%%
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand\blockskip{\bigskip\medskip}
+
+%%%% Define a altura das linhas
+\linespread{1.15}
+
+\begin{document}
+\parindent=0pt
+
+\title[MAC0210]
+{MAC0210 Laboratório de Métodos Numéricos}\vspace{3\jot}%\\\vspace{1\jot}
+
+\footskip=28pt
+
+\maketitle
+\thispagestyle{empty} 
+\pagestyle{plain}
+
+\textbf{Nome: Ygor Sad Machado}\hfill
+\textbf{Número USP: 8910368}\null
+
+\medskip
+\textbf{Exercício 14.3}\hfill
+\textbf{Data: 20/06/2020}\null
+
+\rule{\textwidth}{0.4pt}
+\medskip
+
+Foi incluído, junto a este PDF, o script octave \verb|E14.3.m| que contém uma simulação do método descrito abaixo para $x_0 = 0.4$ e $h =$ 0.1, 0.5 e 0.25. O objetivo é verificar que o método fornece um resultado com precisão suficiente.
+
+\bigskip
+\rule{\textwidth}{0.4pt}
+\medskip
+
+Queremos derivar uma fórmula para aproximar a segunda derivada de uma função $f(x)$ suficientemente suave, usando expansões de Taylor de sexta ordem.
+
+\medskip
+Para isso, assuma que possuímos os sete pontos $x_0 - 3h, x_0 - 2h, x_0 - h, x_0, x_0 + h, x_0 + 2h, x_0 + 3h$. Vamos escrever $f''(x_0)$ em forma da combinação linear das expansões de Taylor ao redor destes sete pontos. Isto é:
+
+\begin{align*}
+    f''(x_0) &= Af(x_0 - 3h) + Bf(x_0 - 2h) + Cf(x_0 - 1h)\\ 
+             &+ Df(x_0) + Ef(x_0 + h) + Ff(x_0 + 2h) + Gf(x_0 + 3h) \numberthis\label{f_2_linear_comb}\\
+\end{align*}
+
+\blockskip
+Expandindo a equação acima usando as expansões de Taylor obtemos:
+
+{\scriptsize
+\begin{align*}
+    f''(x_0) &= A\Big[ f(x_0)
+                       - 3hf'(x_0)
+                       + \frac{(3h)^2}{2}f''(x_0)
+                       - \frac{(3h)^3}{6}f'''(x_0)
+                       + \frac{(3h)^4}{24}f^{(4)}(x_0)
+                       - \frac{(3h)^5}{120}f^{(5)}(x_0)
+                       + \frac{(3h)^6}{720}f^{(6)}(x_0)
+                       + \mathcal{O}(h^6) \Big]\\
+             &+ B\Big[ f(x_0)
+                       - 2hf'(x_0)
+                       + \frac{(2h)^2}{2}f''(x_0)
+                       - \frac{(2h)^3}{6}f'''(x_0)
+                       + \frac{(2h)^4}{24}f^{(4)}(x_0)
+                       - \frac{(2h)^5}{120}f^{(5)}(x_0)
+                       + \frac{(2h)^6}{720}f^{(6)}(x_0)
+                       + \mathcal{O}(h^6) \Big]\\
+             &+ C\Big[ f(x_0)
+                       - hf'(x_0)
+                       + \frac{h^2}{2}f''(x_0)
+                       - \frac{h^3}{6}f'''(x_0)
+                       + \frac{h^4}{24}f^{(4)}(x_0)
+                       - \frac{h^5}{120}f^{(5)}(x_0)
+                       + \frac{h^6}{720}f^{(6)}(x_0)
+                       + \mathcal{O}(h^6) \Big]\\
+             &+ D\Big[ f(x_0) \Big]\\
+             &+ E\Big[ f(x_0)
+                       + hf'(x_0)
+                       + \frac{h^2}{2}f''(x_0)
+                       + \frac{h^3}{6}f'''(x_0)
+                       + \frac{h^4}{24}f^{(4)}(x_0)
+                       + \frac{h^5}{120}f^{(5)}(x_0)
+                       + \frac{h^6}{720}f^{(6)}(x_0)
+                       + \mathcal{O}(h^6) \Big]\\
+             &+ F\Big[ f(x_0)
+                       + 2hf'(x_0)
+                       + \frac{(2h)^2}{2}f''(x_0)
+                       + \frac{(2h)^3}{6}f'''(x_0)
+                       + \frac{(2h)^4}{24}f^{(4)}(x_0)
+                       + \frac{(2h)^5}{120}f^{(5)}(x_0)
+                       + \frac{(2h)^6}{720}f^{(6)}(x_0)
+                       + \mathcal{O}(h^6) \Big]\\
+             &+ G\Big[ f(x_0)
+                       + 3hf'(x_0)
+                       + \frac{(3h)^2}{2}f''(x_0)
+                       + \frac{(3h)^3}{6}f'''(x_0)
+                       + \frac{(3h)^4}{24}f^{(4)}(x_0)
+                       + \frac{(3h)^5}{120}f^{(5)}(x_0)
+                       + \frac{(3h)^6}{720}f^{(6)}(x_0)
+                       + \mathcal{O}(h^6) \Big]\\
+\end{align*}
+}%
+
+\pagebreak
+Rearranjando os termos da equação acima de maneira mais conveniente, obtemos:
+
+{\small
+\begin{align*}
+f''(x_0) &=\ (A + B + C + D + E + F + G)\ f(x_0)\\
+         &+\ (-3A - 2B - C + E + 2F + 3G)\ hf'(x_0)\\
+         &+\ (9A + 4B + C + E + 4F + 9G)\ \frac{h^2}{2}f''(x_0)\\
+         &+\ (-27A - 8B - C + E + 8F + 27G)\ \frac{h^3}{6}f'''(x_0)\\
+         &+\ (81A + 16B + C + E + 16F + 81G)\ \frac{h^4}{24}f^{(4)}(x_0)\\
+         &+\ (-243A - 32B - C + E + 32F + 243G)\ \frac{h^5}{120}f^{(5)}(x_0)\\
+         &+\ (729A + 64B + C + E + 64F + 729G)\ \frac{h^6}{720}f^{(6)}(x_0)\\
+\end{align*}
+}%
+
+\blockskip
+Igualando os coeficientes dos dois lados da equação, temos um sistema de 7 equação e 7 incógnitas:
+
+{\small
+\begin{align*}
+    0 &= A + B + C + D + E + F + G\\
+    0 &= (-3A - 2B - C + E + 2F + 3G)h\\
+    1 &= (9A + 4B + C + E + 4F + 9G)\frac{h^2}{2}\\
+    0 &= (-27A - 8B - C + E + 8F + 27G)\frac{h^3}{6}\\
+    0 &= (81A + 16B + C + E + 16F + 81G)\frac{h^4}{24}\\
+    0 &= (-243A - 32B - C + E + 32F + 243G)\frac{h^5}{120}\\
+    0 &= (729A + 64B + C + E + 64F + 729G)\frac{h^6}{720}\\
+\end{align*}
+}%
+
+\blockskip
+Finalmente, resolvendo o sistema acima, chegamos a:
+
+{\small
+\begin{equation*}
+    A = \frac{1}{90h^2} \qquad
+    B = -\frac{3}{20h^2} \qquad
+    C = \frac{3}{2h^2} \qquad
+    D = -\frac{49}{18h^2} \qquad
+    E = \frac{3}{2h^2} \qquad
+    F = -\frac{3}{20h^2} \qquad
+    G = \frac{1}{90h^2} \qquad
+\end{equation*}
+}%
+
+\blockskip
+\medskip
+\medskip
+Finalmente, aplicando as incógnitas acima em \eqref{f_2_linear_comb}, obtemos uma expressão para $f''(x)$:
+
+{\scriptsize
+\begin{equation*}
+    f''(x_0) = \frac{1}{90h^2}f(x_0 - 3h)
+             - \frac{3}{20h^2}f(x_0 - 2h)
+             + \frac{3}{2h^2}f(x_0 - h)
+             - \frac{49}{18h^2}f(x_0)
+             + \frac{3}{h^2}f(x_0 + h)
+             - \frac{3}{20h^2}f(x_0 + 2h)
+             + \frac{1}{90h^2}f(x_0 + 3h)
+\end{equation*}
+}%
+\qed\null
+
+\end{document}
