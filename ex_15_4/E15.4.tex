@@ -1,0 +1,153 @@
+\documentclass[11pt]{amsart}
+
+%%%% Pacotes adicionais para enumeração de items e alinhamento de equações
+%%%%
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{systeme}
+
+%%%% Escrevendo em português
+%%%% 
+\usepackage[utf8]{inputenc}
+
+%%%% Configurações para output correto de pdf
+%%%%
+
+\usepackage[T1]{fontenc}
+\usepackage{ae}
+\usepackage{aecompl}
+\usepackage{amssymb}
+
+%%%% Layout de página
+%%%%
+\usepackage{fullpage}
+\usepackage{setspace}
+\usepackage{tabu}
+
+%%%% Comandos personalizados
+%%%%
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand\blockskip{\bigskip\medskip}
+
+%%%% Define a altura das linhas
+\linespread{1.15}
+
+\begin{document}
+\parindent=0pt
+
+\title[MAC0210]
+{MAC0210 Laboratório de Métodos Numéricos}\vspace{3\jot}%\\\vspace{1\jot}
+
+\footskip=28pt
+
+\maketitle
+\pagestyle{plain}
+
+\textbf{Nome: Ygor Sad Machado}\hfill
+\textbf{Número USP: 8910368}\null
+
+\medskip
+\textbf{Exercício 15.4}\hfill
+\textbf{Data: 30/06/2020}\null
+
+\rule{\textwidth}{0.4pt}
+
+\textbf{a.}
+Queremos estimar o erro na regra trapezoidal corrigida e mostrar que ele pode ser estimado por
+
+\begin{equation}
+    E(f) = \frac{f^{(4)}(\xi)}{720} (b-a)^5
+\end{equation}
+
+\bigskip
+Seja $p_k(x) = \sum_{j=0}^k a_j f(x_j)$ uma aproximação polinomial para $f$. Pela definição, podemos escrever tal erro como:
+
+\begin{align*}
+    E(f) &= \int_a^b f(x) dx - \int_a^b p_k(x) dx\\
+         &= \int_a^b f(x) - p_k(x) dx
+\end{align*}
+
+\bigskip
+No entanto, sabemos que o erro na interpolação polinomial é dado por:
+
+\begin{equation}
+    f(x) - p_k(x) = f[x_0, \dots, f_k, x] \prod_{i=0}^k (x - x_i)
+\end{equation}
+
+\bigskip
+Logo, podemos escrever:
+
+\begin{align}
+    E(f) &= \int_a^b f[x_0, \dots, f_k, x] \prod_{i=0}^k (x - x_i) dx \label{expanded_error}
+\end{align}
+
+\bigskip
+Usando o teorema do valor médio para diferenças divididas, descobrimos que:
+
+\begin{equation}
+    f[x_0, \dots, f_k, x] = \frac{f^{(k+1)}(\xi)}{(k+1)!}, \quad \text{ para } \xi \in [a, b] \label{mean_diff}
+\end{equation}
+
+\bigskip
+Utilizando \eqref{mean_diff} em \eqref{expanded_error} teremos, em particular, para o nosso contexto:
+
+\begin{align*}
+    E(f) &= \int_a^b f[a, a, b, b, x] (x-a)^2(x-b)^2 dx\\
+         &= f[a, a, b, b, \xi] \int_a^b (x-a)^2(x-b)^2 dx\\
+         &= \frac{f^{(4)}(\xi)}{4!} \int_a^b (x-a)^2(x-b)^2 dx\\
+\end{align*}
+
+\bigskip
+Finalmente, expandindo a integral e simplificando o resultado chegamos à forma final de $E(f)$:
+
+\begin{align*}
+    E(f) &= \frac{f^{(4)}(\xi)}{24} \Big(-\frac{1}{30}(a-b)^5\Big)\\
+         &= \frac{f^{(4)}(\xi)}{720} (b-a)^5
+\end{align*}
+\qed\null
+
+\bigskip
+\bigskip
+\rule{\textwidth}{0.4pt}
+\textbf{b.}
+Foi incluído, junto a este PDF, o script octave \verb|E15.4m|, que contém a simulação geradora dos dados abaixo mencionados.
+
+\bigskip
+Em $\int_0^1 e^x dx$, percebe-se que o método trapezoidal corrigido se aproxima mais do que o \textit{mid-rule} e o trapezoidal básico, mas ainda assim é menos preciso que o método de Simpson.
+
+\bigskip
+\begin{center}
+    \begin{tabular}{c|c}
+        \hline
+        Método & Estimativa de $I(f)$ \\
+        \hline
+        \textbf{Valor exato} & 1.7183...\\
+        Trapezoidal corrigido & 1.7159...\\
+        Trapezoidal básico& 1.8591... \\
+        Simpson & 1.7189... \\
+        Mid-rule & 1.6487... \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\bigskip
+\bigskip
+Novamente, em $\int_0.9^1 e^x dx$, percebe-se que o método trapezoidal corrigido se aproxima do valor real mais do que o \textit{mid-rule} e o trapezoidal básico, ficando, no entanto, aquém do método de Simpson. É importante mencionar que, conforme esperado, o intervalo mais curto tem como consequência precisão mais alta na estimativa.
+
+\bigskip
+\begin{center}
+    \begin{tabular}{c|c}
+        \hline
+        Método & $|E(f)|$ \\
+        \hline
+        Trapezoidal corrigido & $2.2 \times 10^{-4}$\\
+        Trapezoidal básico & $3.59 \times 10^{-8}$ \\
+        Simpson & $9.0 \times 10^{-9}$ \\
+        Mid-rule & $1.1 \times 10^{-4}$ \\
+        \hline
+    \end{tabular}
+\end{center}
+\qed\null
+
+\end{document}
