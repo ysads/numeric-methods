@@ -105,7 +105,7 @@ int main (int argc, char *argv[]) {
     a = 0.0;
     b = 1.0;
     printf("f(x) = sin(x)\n");
-    output(montecarlo_1d(n, a, b, f_1), 0.4596976941);
+    output(0.4596976941, montecarlo_1d(n, a, b, f_1));
 
     /**
         Test 2
@@ -113,7 +113,7 @@ int main (int argc, char *argv[]) {
     a = 3.0;
     b = 7.0;
     printf("f(x) = x^3\n");
-    output(montecarlo_1d(n, a, b, f_2), 580.0000000000);
+    output(580.0000000000, montecarlo_1d(n, a, b, f_2));
 
     /**
         Test 3 - Note that it is not required to use b=infinity, since
@@ -122,7 +122,7 @@ int main (int argc, char *argv[]) {
     a = 0.0;
     b = 50.0;
     printf("f(x) = exp(-x)\n");
-    output(montecarlo_1d(n, a, b, f_3), 1.0000000000);
+    output(1.0000000000, montecarlo_1d(n, a, b, f_3));
 
 
     printf("---------------------------------------------------------\n");
@@ -138,10 +138,10 @@ int main (int argc, char *argv[]) {
     integral = montecarlo_2d(n, a, b, c, d, f_4);
     printf("f(x) = |  1,  x^2 + y^2 <= 1\n");
     printf("       |  0,  otherwise\n");
-    output(integral, 0.7853981634);
+    output(0.7853981634, integral);
 
     printf("value of π\n");
-    output(4 * integral, M_PI);
+    output(3.14159265359, 4 * integral);
 
     return 0;
 }
