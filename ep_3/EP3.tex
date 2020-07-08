@@ -1,0 +1,323 @@
+\documentclass[11pt,reqno,a4paper]{amsart}
+%SetFonts
+
+%SetFonts
+
+%%%% Pacotes adicionais para enumeração de items e alinhamento de equações
+%%%%
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{mathtools}
+
+
+%%%% Escrevendo em português
+%%%% 
+\usepackage[utf8x]{inputenc}
+\usepackage[brazil]{babel}
+% \usepackage[latin1]{inputenc} % to offline compiling, use this
+
+%%%% Configurações para output correto de pdf
+%%%%
+\usepackage[T1]{fontenc}
+\usepackage{ae}
+\usepackage{aecompl}
+\usepackage{amssymb}
+
+%%%% Layout de página
+%%%%
+\usepackage{fullpage}
+\usepackage{setspace}
+\usepackage{bbm}
+
+%%%% Highlight de sintaxe
+%%%%
+\usepackage{minted}
+\usepackage{xcolor}
+\definecolor{softgray}{gray}{0.96}
+\setminted{
+linenos,
+framesep=10px,
+baselinestretch=1.2,
+bgcolor=softgray
+}
+
+
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{dark-gray}{gray}{0.35}
+\newcommand{\code}[1]{\colorbox{light-gray}{\textcolor{dark-gray}{\fontsize{10}{10}{\texttt{#1}}}}}
+
+\begin{document}
+\graphicspath{{images/}}
+\parindent=0pt
+
+\title{MAC0210 - Laboratório de Métodos Numéricos}
+\author{Ygor Sad Machado - N. USP: 8910368}
+
+\pagestyle{plain}
+\onehalfspace
+
+\maketitle
+
+\textbf{Relatório}\hfill
+\textbf{EP3}\null
+\medskip
+
+\noindent\rule{\textwidth}{0.4pt}
+\section{Computando trabalho}
+
+\medskip
+Para compilar e executar a primeira parte do EP, execute \code{make part\_1 \&\& ./part\_1.o}.
+
+\bigskip
+O objetivo dessa primeira parte do EP era interpolar um polinômio $p(x)$ que aproximasse a função $g(x) = F(x)\cos(\theta(x))$ de modo que fosse possível computar o valor de
+
+\begin{equation}
+    \int_{0}^{30} F(x)\cos(\theta(x)) dx
+\end{equation}
+
+\bigskip
+Para a interpolação foi escolhido o método de Newton – ou das diferenças divididas. Sua escolha foi baseada no fato de que sua implementação pareceu muito mais intuitiva e direta, sendo atingida com dois \textit{loops} aninhados.
+
+\bigskip
+Em relação aos métodos de integração, sua implementação tenta simplificar cálculos redundantes ao agrupar parcelas que sejam multiplicadas por algum fator comum. Na regra do trapézio composto, por exemplo, se tomarmos $p(x)$ como o polinômio que aproxima $g(x)$, e um intervalo qualquer entre duas abscissas consecutivas $a$ e $b$ dividido em $n$ subintervalos, vemos que é possível aplicar a seguinte simplificação:
+
+{\footnotesize
+\begin{align*}
+    \int_a^b g(x) dx &\approx \sum_{j=0}^{n-1} \frac{h [p(a + jh) + p(a + (j + 1)h)]}{2}\\
+                     &= h \Big[\frac{p(a + 0h) + p(a + 1h)}{2} + \frac{p(a + 1h) + p(a + 2h)}{2} + \ldots + \frac{p(a + (n-1)h) + p(a + nh)}{2}\Big]\\
+                     &= h \Big[\frac{p(a + 0h) + 2p(a + 1h) + 2p(a + 2h) + \ldots + 2p(a + (n-1)h) + p(a + nh)}{2}\Big]\\
+                     &= h \Big[\frac{p(a)}{2} + \sum_{j=1}^{n-1} p(a + jh) + \frac{p(b)}{2}\Big]
+\end{align*}
+}%
+
+\bigskip
+Um raciocínio equivalente pode ser aplicado à regra de Simpson, que pode ser simplificada consideravelmente utilizando duas somas parciais:
+
+\begin{align*}
+    \int_a^b g(x) dx &\approx \frac{h}{3} \Big(p(a) + 4p(x_1) + p(x_2) + p(x_2) + 4p(x_3) + p(x_4) + \ldots + 4p(x_{n-1}) + p(b)\Big)\\
+        &= \frac{h}{3} \Big(p(a) + 4\sum p(x_{\text{ímpar}}) + 2 \sum p(x_{\text{par}}) + p(b)\Big)\\
+\end{align*}
+
+\bigskip
+Tais simplificações tornam os cálculos mais simples e diretos ao evitarem cômputos desnecessários. Além disso, é possível aproveitar valores que se repetem ao longo dos intervalos considerados – $h$, por exemplo, não precisa ser computado dentro do \textit{loop} já que todas as abscissas estão separadas por 5 unidades.
+
+\bigskip
+Abaixo está apresentada parte significativa do resultado da execução do EP usando 10 dígitos de precisão e comparado os valores calculados para as integrais com o valor de referência 117.266:
+
+
+\begin{minted}{text}
+n = 2
+
+trapezoidal
+> estimated: 117.6176162109
+> expected:  117.2660000000
+> error:     0.3516162109
+
+simpson
+> estimated: 117.1270716146
+> expected:  117.2660000000
+> error:     0.1389283854
+\end{minted}
+
+\begin{minted}{text}
+n = 4
+
+trapezoidal
+> estimated: 117.2528567963
+> expected:  117.2660000000
+> error:     0.0131432037
+
+simpson
+> estimated: 117.1312703247
+> expected:  117.2660000000
+> error:     0.1347296753
+\end{minted}
+
+\begin{minted}{text}
+n = 8
+
+trapezoidal
+> estimated: 117.1619130304
+> expected:  117.2660000000
+> error:     0.1040869696
+
+simpson
+> estimated: 117.1315984418
+> expected:  117.2660000000
+> error:     0.1344015582
+\end{minted}
+
+\begin{minted}{text}
+n = 16
+
+trapezoidal
+> estimated: 117.1391932393
+> expected:  117.2660000000
+> error:     0.1268067607
+
+simpson
+> estimated: 117.1316199756
+> expected:  117.2660000000
+> error:     0.1343800244
+\end{minted}
+
+\begin{minted}{text}
+n = 32
+
+trapezoidal
+> estimated: 117.1335143130
+> expected:  117.2660000000
+> error:     0.1324856870
+
+simpson
+> estimated: 117.1316213375
+> expected:  117.2660000000
+> error:     0.1343786625
+\end{minted}
+
+\bigskip
+Duas coisas precisam ser notadas nesses dados. A primeira é que o valor referência não possui qualquer rigor em sua escolha, tendo sido determinado de maneira direta usando softwares de avaliação numérica de integrais, estando portanto sujeito ao erro e à falta de precisão dos próprios algoritmos que o geraram. Ele é usado aqui com o objetivo de ser ter um ponto de comparação fixo para os resultados dos métodos.
+
+\bigskip
+A segunda observação versa sobre como o erro se comporta em relação ao número de subintervalos $n$. É nítido já para $n=16$ que os resultados obtidos com os métodos tendem a aproximar-se um do outro à medida que $n$ cresça. Essa diferença entre os cálculos diminui ainda mais a partir de $n=256$, de modo que, a partir de certo ponto, não seria exagero tomar os métodos como intercambiáveis – ao menos para o nosso contexto em particular.
+
+\newpage
+\section{Integração por Montecarlo}
+
+\medskip
+Para compilar e executar a primeira parte do EP, execute \code{make part\_2 \&\& ./part\_2.o}.
+
+\bigskip
+A segunda etapa do EP tem como objetivo apresentar uma forma de calcular $\int_a^b g(x) dx$ – ou equivalentemente $\int_a^b \int_a^b g(x,y) dxdy$ usando para isso uma abordagem estatística.
+
+\bigskip
+A primeira observação que merece ser feita é que Montecarlo, na verdade, é o nome dado a uma classe de métodos de integração numérica que se baseiam no uso de uma variáveis aleatórias $U_i$. É possível tomar diversas abordagens na avaliação da integral, mas aqui, em particular, usamos aquele mais estritamente ligada à Lei Forte dos Grandes Números (Lei Forte de Kolmogorov). Isto é, usamos o fato de que podemos gerar um número suficientemente grande de amostras $U_i \in [0,1]$ com distribuição uniforme tal que:
+
+\begin{equation}
+    \int_0^1 g(x) dx \approx \sum_{i=1}^n \frac{g(U_i)}{n}
+\end{equation}
+
+\bigskip
+Note que isso só vale para $U_i \in [0,1]$. No entanto podemos aplicar uma transformação em $U_i \to S_i$, com $S_i \in [a,b]$, usando operações aritméticas simples. Isto é, dado um ponto $U_i = x_i$, aplicamos a ele a seguinte sequência:
+
+\medskip
+\begin{enumerate}
+    \item $g(x) \to g((b-a)x)$ - Leva o ponto $x$ para a mesma escala que o intervalo $[a,b]$
+    \item $g((b-a)x) \to g(a+(b-a)x)$ - Translada o ponto $x$ para que ele esteja dentro de  $[a,b]$
+    \item $g(a+(b-a)x) \to (b-a)g(a+(b-a)x)$ - Corrige a escala do valor de $g$ também possua a mesma escala de $(b-a)$
+\end{enumerate}
+
+\bigskip
+Observe que o raciocínio é equivalente no caso multivariado.
+
+\bigskip
+Novamente nessa etapa foram usados valores de referência calculados por softwares de nível industrial para a avaliar os resultados obtidos. A função que apresentou comportamento mais impreciso foi $x^3$. Como é possível notar abaixo, diferentemente das demais, o erro dela ainda está alto em $n=10^4$,  tornando-se aceitável – ainda que não ideal – somente para $n > 10^6$:
+
+\begin{minted}{text}
+n = 10^4
+f(x) = x^3
+> estimated: 577.0847165592
+> expected:  580.0000000000
+> error:     2.9152834408
+\end{minted}
+
+\begin{minted}{text}
+n = 10^4
+f(x) = x^3
+> estimated: 580.6082115119
+> expected:  580.0000000000
+> error:     0.6082115119
+\end{minted}
+
+\begin{minted}{text}
+n = 10^6
+f(x) = x^3
+> estimated: 580.6336192371
+> expected:  580.0000000000
+> error:     0.6336192371
+\end{minted}
+
+\bigskip
+Em contrapartida, o comportamento de $sin(x)$ é bem agradável, ganhando precisão de um dígito a cada vez que $n$ é multiplicado por 10. Certamente isso é consequência da imagem da função seno, que é muito menor que a imagem de $x^3$ – além, obviamente do fato de a função seno ser periódica.
+
+\begin{minted}{text}
+n = 10^4
+f(x) = sin(x)
+> estimated: 0.4611722547
+> expected:  0.4596976941
+> error:     0.0014745606
+\end{minted}
+
+\begin{minted}{text}
+n = 10^4
+f(x) = sin(x)
+> estimated: 0.4599827441
+> expected:  0.4596976941
+> error:     0.0002850500
+\end{minted}
+
+\begin{minted}{text}
+n = 10^6
+f(x) = sin(x)
+> estimated: 0.4597452121
+> expected:  0.4596976941
+> error:     0.0000475180
+\end{minted}
+
+\bigskip
+Acerca da integração multivariada, observam-se erros baixos e aproximações satisfatórias já para $n > 10^5$. Conseguimos resultados muito bons para a aproximação de $\pi$. Em particular, com $10^7$ alcançamos quatro dígitos de precisão, atingindo a já familiar aprox. de $\pi$ para $3.1416$.
+
+\begin{minted}{text}
+n = 10^4
+f(x) = |  1,  x^2 + y^2 <= 1
+       |  0,  otherwise
+> estimated: 0.7835000000
+> expected:  0.7853981634
+> error:     0.0018981634
+\end{minted}
+
+\begin{minted}{text}
+n = 10^5
+f(x) = |  1,  x^2 + y^2 <= 1
+       |  0,  otherwise
+> estimated: 0.7872800000
+> expected:  0.7853981634
+> error:     0.0018818366
+\end{minted}
+
+\begin{minted}{text}
+n = 10^7
+f(x) = |  1,  x^2 + y^2 <= 1
+       |  0,  otherwise
+> estimated: 0.7853908800
+> expected:  0.7853981634
+> error:     0.0000072834
+\end{minted}
+
+\begin{minted}{text}
+n = 10^4
+value of pi
+> estimated: 3.1340000000
+> expected:  3.1415926536
+> error:     0.0075926536
+\end{minted}
+
+\begin{minted}{text}
+n = 10^5
+value of pi
+> estimated: 3.1491200000
+> expected:  3.1415926536
+> error:     0.0075273464
+\end{minted}
+
+\begin{minted}{text}
+n = 10^7
+value of pi
+> estimated: 3.1415635200
+> expected:  3.1415926536
+> error:     0.0000291336
+\end{minted}
+\qed\null
+
+\endgroup
+\end{document}
