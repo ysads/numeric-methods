@@ -1,3 +1,12 @@
+/**
+ * Ygor Sad Machado
+ * NUSP: 8910368
+ *
+ * EP 3 - Part 2
+ * This part computes both uni- and multidimensional integrals using
+ * Montecarlo's method. It computes integrals of several test functions
+ * as long as estimate the value o pi using a bivariate function.
+ */
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
